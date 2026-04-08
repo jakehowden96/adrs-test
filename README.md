@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This repository hosts published ADR sites for the organisation via GitHub Pages. It is a **deployment target only** — no workflows or scripts run here. ADR source files live in each service's own repository, and each service's pipeline handles building, deploying, and regenerating the landing page.
+This repository hosts published ADR sites for the organisation via GitHub Pages. It is a **deployment target only**. ADR source files live in each service's own repository. This repo provides a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) that handles building, deploying, and regenerating the landing page — service repos call it with just their team and project name.
 
 ## URL Structure
 
@@ -22,16 +22,31 @@ For example: `https://jakehowden96.github.io/adrs-test/partnerships/partner-port
 
 ### 1. Add files to your service repo
 
-Copy these files from an existing onboarded service (e.g. `partner-portal-service`):
+You only need two things:
 
-| File | What to change |
-|------|---------------|
-| `mkdocs.yml` | Update `site_name`, `site_description`, and `nav` entries |
-| `requirements-mkdocs.txt` | Keep pinned versions as-is |
-| `docs/ADR/index.md` | Update to list your service's ADRs |
-| `.github/workflows/deploy-adrs.yml` | Update the four env vars at the top: `TEAM_NAME`, `PROJECT_NAME`, `HOST_REPO`, `PAGES_BASE_URL` |
+**`docs/ADR/`** — your ADR markdown files (at minimum an `index.md`)
 
-The `site_url` in `mkdocs.yml` is automatically derived by the pipeline from the env vars — no need to keep it in sync manually.
+**`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow in this repo:
+
+```yaml
+name: Deploy ADRs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/ADR/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: jakehowden96/adrs-test/.github/workflows/deploy-adrs.yml@main
+    with:
+      team_name: <your-team>        # e.g. partnerships
+      project_name: <your-project>  # e.g. partner-portal-service
+    secrets:
+      deploy_key: ${{ secrets.ADR_DEPLOY_KEY }}
+```
 
 ### 2. Set up authentication
 
@@ -52,11 +67,6 @@ Merge your changes to `main`. The workflow will build your MkDocs site, push it 
 - `team_name`: lowercase, hyphen-separated (e.g. `partnerships`, `platform`)
 - `project_name`: typically the repo name, lowercase, hyphen-separated
 
-## MkDocs Dependency Versions
+## MkDocs Configuration
 
-All services should use consistent versions to avoid visual inconsistencies:
-
-```
-mkdocs==1.6.1
-mkdocs-material==9.6.12
-```
+MkDocs config, theme, and dependency versions are managed centrally in the reusable workflow. No `mkdocs.yml` or `requirements-mkdocs.txt` is needed in service repos.
