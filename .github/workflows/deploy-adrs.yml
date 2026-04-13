@@ -46,6 +46,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Remove any existing directory for this project under a different
+          # team so that team renames don't leave stale content behind.
+          find docs -mindepth 2 -maxdepth 2 -type d -name "$PROJECT_NAME" \
+            ! -path "$TARGET_DIR" -exec rm -rf {} +
+
+          # Clean up empty team directories left after a move.
+          find docs -mindepth 1 -maxdepth 1 -type d -empty -delete 2>/dev/null || true
+
           mkdir -p "$TARGET_DIR"
           rm -rf "${TARGET_DIR:?}"/*
 
