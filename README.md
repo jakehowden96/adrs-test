@@ -59,17 +59,11 @@ jobs:
     with:
       team_name: <your-team>        # e.g. partnership-experiences
       project_name: <your-project>  # e.g. partner-portal-service
-    secrets:
-      deploy_key: ${{ secrets.ADR_DEPLOY_KEY }}
 ```
 
-### 2. Set up authentication
+Authentication is handled by an org-level GitHub App with `contents:write` permission on this repo. No per-repo secret setup is needed — service repos inherit access automatically.
 
-Generate an SSH key pair and add:
-- **Public key** as a deploy key (write access) on this repo
-- **Private key** as a secret named `ADR_DEPLOY_KEY` on your service repo
-
-### 3. Push and verify
+### 2. Push and verify
 
 Merge your changes to `main`. The workflow will push your markdown here and trigger a site rebuild automatically.
 
