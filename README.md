@@ -39,7 +39,7 @@ author: Jake Howden
 
 ### 1. Add files to your service repo
 
-**`docs/adr/`** — your ADR markdown files with the front matter convention above. No `index.md` is needed — the host repo generates one automatically.
+**`docs/adr/`** — your ADR markdown files with the front matter convention above.
 
 **`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow:
 
