@@ -26,11 +26,11 @@ title: Use PostgreSQL for Transactional Persistence
 adr_number: "001"
 status: accepted    # proposed | accepted | deprecated | superseded | rejected
 date: 2023-10-12
-author: sarah.jenkins
+author: Jake Howden
 ---
 ```
 
-- `adr_number`: Zero-padded string (`"001"`, `"002"`). Also controls filename: `001-use-postgresql.md`
+- `adr_number`: Zero-padded string (`"001"`, `"002"`). Controls filename: `001-use-postgresql.md`
 - `status`: Drives the status chip rendered on the page. One of: `proposed`, `accepted`, `deprecated`, `superseded`, `rejected`
 - `date`: The date the decision was made (ISO 8601), not the commit date
 - `author`: The decision author
@@ -39,7 +39,7 @@ author: sarah.jenkins
 
 ### 1. Add files to your service repo
 
-**`docs/adr/`** — your ADR markdown files with the front matter convention above.
+**`docs/adr/`** — your ADR markdown files with the front matter convention above. No `index.md` is needed — the host repo generates one automatically.
 
 **`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow:
 
@@ -57,7 +57,7 @@ jobs:
   deploy:
     uses: jakehowden96/adrs-test/.github/workflows/deploy-adrs.yml@main
     with:
-      team_name: <your-team>        # e.g. partnerships
+      team_name: <your-team>        # e.g. partnership-experiences
       project_name: <your-project>  # e.g. partner-portal-service
     secrets:
       deploy_key: ${{ secrets.ADR_DEPLOY_KEY }}
@@ -79,8 +79,10 @@ Merge your changes to `main`. The workflow will push your markdown here and trig
 docs/<team_name>/<project_name>/
 ```
 
-- `team_name`: lowercase, hyphen-separated (e.g. `partnerships`, `platform`)
+- `team_name`: lowercase, hyphen-separated (e.g. `partnership-experiences`, `platform`)
 - `project_name`: typically the repo name, lowercase, hyphen-separated
+
+When a service changes team, update `team_name` in the workflow and re-run the pipeline. The reusable workflow automatically removes the project from the old team directory and places it under the new one.
 
 ## Local Development
 
