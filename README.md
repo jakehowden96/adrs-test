@@ -11,7 +11,7 @@ https://jakehowden96.github.io/adrs-test/<team>/<project>/
 
 ## How It Works
 
-1. A developer writes an ADR in their service repo (e.g. `partner-portal-service/docs/ADR/`)
+1. A developer writes an ADR in their service repo (e.g. `partner-portal-service/docs/adr/`)
 2. On merge to `main`, a GitHub Action pushes the raw markdown to this repo under `docs/<team>/<project>/`
 3. A host-side workflow rebuilds the unified MkDocs site
 4. GitHub Pages serves the content as a single cohesive portal
@@ -39,7 +39,7 @@ author: sarah.jenkins
 
 ### 1. Add files to your service repo
 
-**`docs/ADR/`** — your ADR markdown files with the front matter convention above.
+**`docs/adr/`** — your ADR markdown files with the front matter convention above.
 
 **`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow:
 
@@ -50,7 +50,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "docs/ADR/**"
+      - "docs/adr/**"
   workflow_dispatch:
 
 jobs:

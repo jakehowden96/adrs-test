@@ -49,7 +49,7 @@ jobs:
           mkdir -p "$TARGET_DIR"
           rm -rf "${TARGET_DIR:?}"/*
 
-          cp -r ../docs/ADR/* "$TARGET_DIR/"
+          cp -r ../docs/adr/* "$TARGET_DIR/"
 
           if [ ! -f "$TARGET_DIR/index.md" ]; then
             cat > "$TARGET_DIR/index.md" << EOF
