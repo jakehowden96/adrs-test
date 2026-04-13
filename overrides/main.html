@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if page and page.meta and page.meta.adr_number is defined %}
+    <div class="adr-meta-header">
+      <div class="adr-meta-left">
+        <span class="adr-number">{{ page.meta.adr_number }}</span>
+        {% if page.meta.status %}
+          <span class="adr-status-chip adr-status-{{ page.meta.status | lower }}">
+            {{ page.meta.status | capitalize }}
+          </span>
+        {% endif %}
+      </div>
+      <div class="adr-meta-right">
+        {% if page.meta.date %}
+          <span class="adr-date">{{ page.meta.date }}</span>
+        {% endif %}
+        {% if page.meta.author %}
+          <span class="adr-author">{{ page.meta.author }}</span>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+  {{ super() }}
+{% endblock %}

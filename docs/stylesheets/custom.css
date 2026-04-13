@@ -1,0 +1,676 @@
+/* ============================================================
+   ADR Portal — Confused.com Brand
+   Black/white neutrals, Poppins typography.
+   ============================================================ */
+
+/* --- Colour Tokens --- */
+:root {
+  --md-primary-fg-color: #1f1f1f;
+  --md-primary-fg-color--light: #efefef;
+  --md-primary-fg-color--dark: #1f1f1f;
+  --md-accent-fg-color: #3c3c3c;
+
+  /* Nav hover */
+  --adr-nav-hover-bg: rgba(31, 31, 31, 0.06);
+
+  /* Surface hierarchy */
+  --adr-bg: #ffffff;
+  --adr-nav: #f3f3f3;
+  --adr-container-low: #f3f3f3;
+  --adr-surface-dim: #efefef;
+
+  /* Text */
+  --adr-on-surface: #1f1f1f;
+  --adr-on-surface-variant: #3c3c3c;
+  --adr-outline: #8a8a8a;
+  --adr-outline-variant: #d4d4d4;
+
+  /* Status chips — Confused.com product palette for semantic colour */
+  --adr-status-proposed-bg: rgba(250, 207, 97, 0.20);
+  --adr-status-proposed-fg: #8a6a10;
+  --adr-status-accepted-bg: rgba(77, 182, 161, 0.18);
+  --adr-status-accepted-fg: #2a7a66;
+  --adr-status-deprecated-bg: rgba(255, 134, 132, 0.18);
+  --adr-status-deprecated-fg: #a23230;
+  --adr-status-superseded-bg: rgba(88, 170, 224, 0.18);
+  --adr-status-superseded-fg: #3a6f94;
+  --adr-status-rejected-bg: rgba(162, 1, 1, 0.12);
+  --adr-status-rejected-fg: #a20101;
+
+  /* Nav active */
+  --adr-nav-active-bg: rgba(31, 31, 31, 0.08);
+  --adr-nav-active-fg: #1f1f1f;
+
+  /* Typography override */
+  --md-text-font: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --md-code-font: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* --- Base Layout --- */
+
+/* --- Sidebar --- */
+.md-sidebar--secondary {
+  border-left: none;
+}
+
+/* --- Nav Styling --- */
+
+/* Hide the sidebar title block (duplicates the header bar) */
+.md-nav--primary > .md-nav__title,
+label.md-nav__title {
+  display: none !important;
+}
+
+/* Hide the home page entry from the nav tree */
+.md-nav--primary > .md-nav__list > .md-nav__item:first-child > .md-nav__link[href="."],
+.md-nav--primary > .md-nav__list > .md-nav__item:first-child > .md-nav__link[href="./"] {
+  display: none;
+}
+.md-nav__link[href$="/adrs-test/"] {
+  display: none;
+}
+
+.md-status {
+  display: none !important;
+}
+
+/* Chevron toggle icons */
+.md-nav--primary .md-nav__icon {
+  color: var(--adr-on-surface-variant);
+}
+.md-nav__icon:hover {
+  background-color: var(--adr-nav-hover-bg) !important;
+  border-radius: 0.25rem;
+}
+
+/* Nav links — follow Material defaults, no background boxes */
+.md-nav--primary .md-nav__link {
+  color: var(--adr-on-surface);
+  transition: color 125ms, background-color 125ms;
+}
+
+.md-nav--primary .md-nav__link:hover,
+.md-nav--primary .md-nav__link:focus {
+  color: var(--md-accent-fg-color);
+  background-color: var(--adr-nav-hover-bg);
+  border-radius: 0.25rem;
+}
+
+/* Active page link */
+.md-nav__link--active {
+  color: var(--md-primary-fg-color) !important;
+  font-weight: 600;
+}
+
+/* Don't highlight parents just because a child is active */
+.md-nav__item--active > .md-nav__link:not(.md-nav__link--active) {
+  color: var(--adr-on-surface);
+  font-weight: inherit;
+}
+
+/* Level 1: Team names — bold section headers */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__link {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--adr-on-surface);
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Level 2: Project names — brand accent */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > a.md-nav__link {
+  color: var(--md-primary-fg-color);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link:hover,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > a.md-nav__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Level 3: ADR titles — lighter, smaller */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  color: var(--adr-on-surface-variant);
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Spacing between team groups */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested {
+  margin-top: 0.75rem;
+}
+.md-nav--primary > .md-nav__list > .md-nav__item--nested:first-child {
+  margin-top: 0;
+}
+
+/* --- Header --- */
+.md-header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(138, 138, 138, 0.2);
+  color: var(--adr-on-surface);
+}
+
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.md-header__title {
+  color: var(--adr-on-surface);
+  font-weight: 600;
+}
+
+/* Ensure header icons (search, theme toggle, nav) are visible in light mode */
+.md-header .md-header__button,
+.md-header .md-icon {
+  color: var(--adr-on-surface);
+}
+
+.md-header .md-logo svg {
+  fill: var(--adr-on-surface);
+}
+
+.md-header .md-search__icon svg {
+  fill: var(--adr-on-surface);
+}
+
+/* --- Typography --- */
+.md-typeset {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--adr-on-surface-variant);
+}
+
+.md-typeset h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--adr-on-surface);
+  margin-top: 0;
+}
+
+.md-typeset h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--adr-on-surface);
+  margin-top: 2rem;
+}
+
+.md-typeset h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--adr-on-surface);
+}
+
+.md-typeset a {
+  color: var(--md-primary-fg-color);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* --- Code Blocks --- */
+.md-typeset code {
+  background: var(--adr-container-low);
+  border-radius: 0.25rem;
+  border: none;
+}
+
+.md-typeset pre {
+  border-radius: 0.375rem;
+  border: none;
+}
+
+.md-typeset pre > code {
+  background: var(--adr-surface-dim);
+  border-radius: 0.375rem;
+}
+
+/* --- Tables: no borders, tonal rows --- */
+.md-typeset table:not([class]) {
+  border: none;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--adr-container-low);
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--adr-on-surface-variant);
+  padding: 0.75rem 1rem;
+}
+
+.md-typeset table:not([class]) td {
+  border: none;
+  border-bottom: 1px solid rgba(138, 138, 138, 0.15);
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+/* --- Status Chips --- */
+.adr-status-chip {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: 0.125rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.adr-status-proposed {
+  background: var(--adr-status-proposed-bg);
+  color: var(--adr-status-proposed-fg);
+}
+
+.adr-status-accepted {
+  background: var(--adr-status-accepted-bg);
+  color: var(--adr-status-accepted-fg);
+}
+
+.adr-status-deprecated {
+  background: var(--adr-status-deprecated-bg);
+  color: var(--adr-status-deprecated-fg);
+}
+
+.adr-status-superseded {
+  background: var(--adr-status-superseded-bg);
+  color: var(--adr-status-superseded-fg);
+}
+
+.adr-status-rejected {
+  background: var(--adr-status-rejected-bg);
+  color: var(--adr-status-rejected-fg);
+}
+
+/* --- ADR Metadata Header (on detail pages) --- */
+.adr-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(138, 138, 138, 0.15);
+}
+
+.adr-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adr-number {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--adr-on-surface-variant);
+  font-family: var(--md-code-font);
+}
+
+.adr-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.adr-date,
+.adr-author {
+  font-size: 0.75rem;
+  color: var(--adr-on-surface-variant);
+}
+
+.adr-author::before {
+  content: "\b7  ";
+}
+
+/* --- Home Page: Hero --- */
+.adr-home {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.adr-home-hero {
+  margin-bottom: 3rem;
+}
+
+.adr-home-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--adr-on-surface-variant);
+  margin-bottom: 1rem;
+}
+
+/* Hide permalink anchors on the home hero heading */
+.adr-home-hero h1 .headerlink {
+  display: none;
+}
+
+.adr-accent {
+  color: var(--md-primary-fg-color);
+}
+
+.adr-home-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--adr-on-surface-variant);
+  max-width: 540px;
+}
+
+/* --- Home Page: Recently Updated --- */
+.adr-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.adr-section-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.adr-section-desc {
+  font-size: 0.8125rem;
+  color: var(--adr-on-surface-variant);
+  margin: 0.25rem 0 0;
+}
+
+.adr-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Suppress stray <p> tags injected by markdown parser inside macro output */
+.adr-recent-list > p {
+  display: none;
+}
+.adr-home > p {
+  display: none;
+}
+
+.adr-recent-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid rgba(138, 138, 138, 0.15);
+  transition: background 0.15s;
+}
+
+.adr-recent-card:first-child {
+  border-top: 1px solid rgba(138, 138, 138, 0.15);
+}
+
+.adr-recent-card:hover {
+  background: var(--adr-container-low);
+}
+
+.adr-recent-icon {
+  display: none;
+}
+
+.adr-recent-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.adr-recent-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--adr-on-surface);
+}
+
+.adr-recent-meta {
+  font-size: 0.6875rem;
+  color: var(--adr-on-surface-variant);
+  letter-spacing: 0.02em;
+}
+
+.adr-recent-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.adr-recent-date {
+  font-size: 0.75rem;
+  color: var(--adr-on-surface-variant);
+}
+
+/* --- Home Page: Stats --- */
+.adr-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.adr-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.5rem 2rem;
+  background: var(--adr-container-low);
+  border-radius: 0.375rem;
+  min-width: 160px;
+}
+
+.adr-stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--md-primary-fg-color);
+  line-height: 1;
+}
+
+.adr-stat-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--adr-on-surface-variant);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --- Project ADR Table --- */
+.adr-project-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+}
+
+.adr-project-table th {
+  background: var(--adr-container-low);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--adr-on-surface-variant);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: none;
+}
+
+.adr-project-table td {
+  padding: 0.875rem 1rem;
+  border: none;
+  border-bottom: 1px solid rgba(138, 138, 138, 0.15);
+  vertical-align: middle;
+  font-size: 0.875rem;
+}
+
+.adr-table-number {
+  font-family: var(--md-code-font);
+  font-weight: 600;
+  color: var(--adr-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.adr-table-link {
+  color: var(--adr-on-surface);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.adr-table-link:hover {
+  color: var(--md-primary-fg-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --- Empty State --- */
+.adr-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--adr-on-surface-variant);
+}
+
+/* --- Admonitions: softer tonal treatment --- */
+.md-typeset .admonition,
+.md-typeset details {
+  border: none;
+  border-left: 3px solid var(--md-primary-fg-color);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--adr-container-low);
+}
+
+/* --- Dark Mode Overrides --- */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #1f1f1f;
+  --md-default-fg-color: #efefef;
+
+  --adr-bg: #1f1f1f;
+  --adr-nav: #1f1f1f;
+  --adr-container-low: #3c3c3c;
+  --adr-surface-dim: #3c3c3c;
+  --adr-on-surface: #efefef;
+  --adr-on-surface-variant: #d4d4d4;
+  --adr-outline: #8a8a8a;
+  --adr-outline-variant: #3c3c3c;
+  --adr-nav-hover-bg: rgba(239, 239, 239, 0.08);
+  --adr-nav-active-bg: rgba(239, 239, 239, 0.12);
+  --adr-nav-active-fg: #ffffff;
+
+  /* Status chips — dark mode, lightened for readability */
+  --adr-status-proposed-bg: rgba(250, 207, 97, 0.18);
+  --adr-status-proposed-fg: #facf61;
+  --adr-status-accepted-bg: rgba(77, 182, 161, 0.18);
+  --adr-status-accepted-fg: #82ccbd;
+  --adr-status-deprecated-bg: rgba(255, 134, 132, 0.15);
+  --adr-status-deprecated-fg: #ff8684;
+  --adr-status-superseded-bg: rgba(88, 170, 224, 0.15);
+  --adr-status-superseded-fg: #8ac4e9;
+  --adr-status-rejected-bg: rgba(162, 1, 1, 0.18);
+  --adr-status-rejected-fg: #e06060;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+  background: #1f1f1f;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-md-color-scheme="slate"] .md-typeset {
+  color: var(--adr-on-surface-variant);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3 {
+  color: var(--adr-on-surface);
+}
+
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #efefef;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link {
+  color: var(--adr-on-surface);
+}
+
+/* Team names in dark mode */
+[data-md-color-scheme="slate"] .md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__link {
+  color: var(--adr-on-surface);
+}
+
+/* Service names in dark mode — brand accent */
+[data-md-color-scheme="slate"] .md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav__container > a.md-nav__link {
+  color: #d4d4d4;
+}
+
+/* ADR links in dark mode */
+[data-md-color-scheme="slate"] .md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list > .md-nav__item > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  color: var(--adr-on-surface-variant);
+}
+
+[data-md-color-scheme="slate"] .md-nav__link:hover,
+[data-md-color-scheme="slate"] .md-nav__link:focus {
+  color: #ffffff;
+  background-color: var(--adr-nav-hover-bg);
+  border-radius: 0.25rem;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: var(--adr-nav-active-fg) !important;
+}
+
+[data-md-color-scheme="slate"] .adr-recent-card {
+  border-color: var(--adr-outline-variant);
+}
+
+[data-md-color-scheme="slate"] .adr-recent-card:hover {
+  background: var(--adr-container-low);
+}
+
+[data-md-color-scheme="slate"] .adr-recent-title {
+  color: var(--adr-on-surface);
+}
+
+[data-md-color-scheme="slate"] .adr-home-hero h1 {
+  color: var(--adr-on-surface-variant);
+}
+
+[data-md-color-scheme="slate"] .adr-accent {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .adr-home-subtitle,
+[data-md-color-scheme="slate"] .adr-section-desc,
+[data-md-color-scheme="slate"] .adr-recent-meta,
+[data-md-color-scheme="slate"] .adr-recent-date,
+[data-md-color-scheme="slate"] .adr-date,
+[data-md-color-scheme="slate"] .adr-author {
+  color: var(--adr-on-surface-variant);
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  background: var(--adr-surface-dim);
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background: var(--adr-container-low);
+}
+
+[data-md-color-scheme="slate"] .md-header__title {
+  color: var(--adr-on-surface);
+}

@@ -1,0 +1,67 @@
+site_name: Architecture Decision Records
+site_url: https://jakehowden96.github.io/adrs-test/
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Poppins
+    code: JetBrains Mono
+  icon:
+    logo: material/file-document-outline
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - toc.follow
+
+extra_css:
+  - https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap
+  - stylesheets/custom.css
+
+plugins:
+  - search
+  - awesome-pages:
+      collapse_single_pages: false
+      strict: false
+      order: asc
+      sort_type: natural
+  - macros:
+      module_name: main
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - tables
+  - attr_list
+  - md_in_html
+  - meta

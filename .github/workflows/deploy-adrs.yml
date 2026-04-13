@@ -1,4 +1,4 @@
-name: Deploy ADRs
+name: Deploy ADR Content
 
 on:
   workflow_call:
@@ -15,10 +15,9 @@ on:
 
 env:
   HOST_REPO: git@github.com:jakehowden96/adrs-test.git
-  PAGES_BASE_URL: https://jakehowden96.github.io/adrs-test
 
 jobs:
-  deploy:
+  push-content:
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-adrs
@@ -27,77 +26,19 @@ jobs:
       - name: Checkout source repo
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install MkDocs
-        run: pip install mkdocs==1.6.1 mkdocs-material==9.6.12
-
-      - name: Generate MkDocs config and build
-        env:
-          TEAM_NAME: ${{ inputs.team_name }}
-          PROJECT_NAME: ${{ inputs.project_name }}
-        run: |
-          SITE_URL="${PAGES_BASE_URL}/${TEAM_NAME}/${PROJECT_NAME}/"
-          SITE_NAME="${PROJECT_NAME} - ADRs"
-
-          cat > mkdocs.yml << EOF
-          site_name: "${SITE_NAME}"
-          site_url: "${SITE_URL}"
-          docs_dir: docs/ADR
-          site_dir: site
-          use_directory_urls: true
-          theme:
-            name: material
-            palette:
-              - media: "(prefers-color-scheme: light)"
-                scheme: default
-                primary: indigo
-                accent: indigo
-                toggle:
-                  icon: material/brightness-7
-                  name: Switch to dark mode
-              - media: "(prefers-color-scheme: dark)"
-                scheme: slate
-                primary: indigo
-                accent: indigo
-                toggle:
-                  icon: material/brightness-4
-                  name: Switch to light mode
-            features:
-              - navigation.instant
-              - navigation.top
-              - search.highlight
-              - content.code.copy
-          plugins:
-            - search
-          markdown_extensions:
-            - admonition
-            - pymdownx.details
-            - pymdownx.superfences
-            - toc:
-                permalink: true
-            - tables
-            - attr_list
-          EOF
-
-          mkdocs build --strict
-
       - name: Setup SSH for deploy key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.deploy_key }}
 
-      - name: Clone host repo and deploy content
+      - name: Push ADR markdown to host repo
         env:
           TEAM_NAME: ${{ inputs.team_name }}
           PROJECT_NAME: ${{ inputs.project_name }}
         run: |
           set -euo pipefail
 
-          TARGET_DIR="${TEAM_NAME}/${PROJECT_NAME}"
+          TARGET_DIR="docs/${TEAM_NAME}/${PROJECT_NAME}"
 
           git clone --depth 1 "$HOST_REPO" adrs-host
           cd adrs-host
@@ -107,136 +48,21 @@ jobs:
 
           mkdir -p "$TARGET_DIR"
           rm -rf "${TARGET_DIR:?}"/*
-          cp -r ../site/* "$TARGET_DIR/"
 
-      - name: Regenerate landing page
-        working-directory: adrs-host
-        run: |
-          python3 << 'GENERATE_INDEX'
-          from pathlib import Path
+          cp -r ../docs/ADR/* "$TARGET_DIR/"
 
-          EXCLUDE = {".git", ".github", ".claude", "node_modules", "__pycache__"}
-          root = Path.cwd()
+          if [ ! -f "$TARGET_DIR/index.md" ]; then
+            cat > "$TARGET_DIR/index.md" << EOF
+          ---
+          title: ${PROJECT_NAME}
+          description: Architecture Decision Records for ${PROJECT_NAME}.
+          ---
 
-          teams = {}
-          for team_dir in sorted(root.iterdir()):
-              if not team_dir.is_dir() or team_dir.name in EXCLUDE or team_dir.name.startswith("."):
-                  continue
-              projects = sorted(
-                  p.name for p in team_dir.iterdir()
-                  if p.is_dir() and not p.name.startswith(".")
-              )
-              if projects:
-                  teams[team_dir.name] = projects
+          # ${PROJECT_NAME}
 
-          if not teams:
-              team_sections = '<p class="empty">No ADRs published yet.</p>'
-          else:
-              sections = []
-              for team, projects in teams.items():
-                  links = "\n".join(
-                      f'            <a href="{team}/{project}/" class="project">{project}</a>'
-                      for project in projects
-                  )
-                  sections.append(
-                      f'        <div class="team">\n'
-                      f'          <h2>{team}</h2>\n'
-                      f'{links}\n'
-                      f'        </div>'
-                  )
-              team_sections = "\n".join(sections)
-
-          html = f"""<!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Architecture Decision Records</title>
-            <style>
-              * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-              body {{
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                background: #f5f5f5;
-                color: #1a1a1a;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 3rem 1rem;
-              }}
-              header {{
-                text-align: center;
-                margin-bottom: 3rem;
-              }}
-              header h1 {{
-                font-size: 2rem;
-                font-weight: 700;
-                margin-bottom: 0.25rem;
-              }}
-              header p {{
-                color: #666;
-                font-size: 1rem;
-              }}
-              .container {{
-                width: 100%;
-                max-width: 640px;
-              }}
-              .team {{
-                margin-bottom: 2rem;
-              }}
-              .team h2 {{
-                font-size: 0.85rem;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                color: #666;
-                margin-bottom: 0.5rem;
-                padding-bottom: 0.25rem;
-                border-bottom: 1px solid #ddd;
-              }}
-              .project {{
-                display: block;
-                padding: 0.75rem 1rem;
-                margin-bottom: 0.5rem;
-                background: #fff;
-                border-radius: 6px;
-                text-decoration: none;
-                color: #1a73e8;
-                font-weight: 500;
-                transition: box-shadow 0.15s;
-              }}
-              .project:hover {{
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-              }}
-              .empty {{
-                color: #999;
-                text-align: center;
-                padding: 2rem;
-              }}
-            </style>
-          </head>
-          <body>
-            <header>
-              <h1>Architecture Decision Records</h1>
-            </header>
-            <div class="container">
-          {team_sections}
-            </div>
-          </body>
-          </html>
-          """
-
-          import textwrap
-          (root / "index.html").write_text(textwrap.dedent(html))
-          print(f"Generated index.html with {sum(len(p) for p in teams.values())} project(s) across {len(teams)} team(s)")
-          GENERATE_INDEX
-
-      - name: Commit and push
-        working-directory: adrs-host
-        env:
-          PROJECT_NAME: ${{ inputs.project_name }}
-        run: |
-          set -euo pipefail
+          {{ project_adr_table() }}
+          EOF
+          fi
 
           git add -A
           if git diff --cached --quiet; then
@@ -244,7 +70,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "docs: update ADRs for ${PROJECT_NAME}"
+          git commit -m "docs: update ADR content for ${PROJECT_NAME}"
 
           MAX_RETRIES=3
           for i in $(seq 1 $MAX_RETRIES); do

@@ -1,32 +1,47 @@
 # Architecture Decision Records
 
-This repository hosts published ADR sites for the organisation via GitHub Pages. It is a **deployment target only**. ADR source files live in each service's own repository. This repo provides a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows) that handles building, deploying, and regenerating the landing page — service repos call it with just their team and project name.
+A unified portal for ADR documentation across the organisation, built with MkDocs Material. Service repos push their ADR markdown here; the host repo builds and deploys a single cohesive site with shared navigation, search, and styling.
 
 ## URL Structure
 
 ```
+https://jakehowden96.github.io/adrs-test/
 https://jakehowden96.github.io/adrs-test/<team>/<project>/
 ```
-
-For example: `https://jakehowden96.github.io/adrs-test/partnerships/partner-portal-service/`
 
 ## How It Works
 
 1. A developer writes an ADR in their service repo (e.g. `partner-portal-service/docs/ADR/`)
-2. On merge to `main`, a GitHub Action in the service repo builds the MkDocs site
-3. The action pushes the built HTML to this repo under `<team>/<project>/`
-4. The action regenerates the landing page (`index.html`) to include all teams/projects
-5. GitHub Pages serves the content
+2. On merge to `main`, a GitHub Action pushes the raw markdown to this repo under `docs/<team>/<project>/`
+3. A host-side workflow rebuilds the unified MkDocs site
+4. GitHub Pages serves the content as a single cohesive portal
+
+## ADR Front Matter Convention
+
+Every ADR markdown file must include this front matter:
+
+```yaml
+---
+title: Use PostgreSQL for Transactional Persistence
+adr_number: "001"
+status: accepted    # proposed | accepted | deprecated | superseded | rejected
+date: 2023-10-12
+author: sarah.jenkins
+---
+```
+
+- `adr_number`: Zero-padded string (`"001"`, `"002"`). Also controls filename: `001-use-postgresql.md`
+- `status`: Drives the status chip rendered on the page. One of: `proposed`, `accepted`, `deprecated`, `superseded`, `rejected`
+- `date`: The date the decision was made (ISO 8601), not the commit date
+- `author`: The decision author
 
 ## Onboarding a New Service
 
 ### 1. Add files to your service repo
 
-You only need two things:
+**`docs/ADR/`** — your ADR markdown files with the front matter convention above.
 
-**`docs/ADR/`** — your ADR markdown files (at minimum an `index.md`)
-
-**`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow in this repo:
+**`.github/workflows/deploy-adrs.yml`** — a thin workflow that calls the reusable workflow:
 
 ```yaml
 name: Deploy ADRs
@@ -56,17 +71,26 @@ Generate an SSH key pair and add:
 
 ### 3. Push and verify
 
-Merge your changes to `main`. The workflow will build your MkDocs site, push it here, and regenerate the landing page automatically.
+Merge your changes to `main`. The workflow will push your markdown here and trigger a site rebuild automatically.
 
 ## Folder Convention
 
 ```
-<team_name>/<project_name>/
+docs/<team_name>/<project_name>/
 ```
 
 - `team_name`: lowercase, hyphen-separated (e.g. `partnerships`, `platform`)
 - `project_name`: typically the repo name, lowercase, hyphen-separated
 
-## MkDocs Configuration
+## Local Development
 
-MkDocs config, theme, and dependency versions are managed centrally in the reusable workflow. No `mkdocs.yml` or `requirements-mkdocs.txt` is needed in service repos.
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
+
+The site will be available at `http://127.0.0.1:8000/`.
+
+## Configuration
+
+MkDocs config, theme overrides, and dependency versions are managed centrally in this repo. No `mkdocs.yml` is needed in service repos — they only push raw markdown.
