@@ -26,7 +26,7 @@ theme:
     text: Poppins
     code: JetBrains Mono
   icon:
-    logo: material/file-document-outline
+    logo: material/home
   features:
     - navigation.instant
     - navigation.instant.progress
